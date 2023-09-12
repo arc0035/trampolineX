@@ -5,6 +5,7 @@ import Home from "../pages/home";
 import DeployAccount from "../pages/deploy-account";
 import TransferAsset from "../pages/transfer-asset";
 
+import {createBrowserRouter} from 'react-router-dom';
 
 const routerMap = [
     {
@@ -32,3 +33,8 @@ const routerMap = [
         element: <TransferAsset/>
     }
 ]
+
+const router = createBrowserRouter(routerMap);
+
+
+export default router;
