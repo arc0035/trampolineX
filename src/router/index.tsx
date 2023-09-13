@@ -6,6 +6,7 @@ import DeployAccount from "../pages/deploy-account";
 import TransferAsset from "../pages/transfer-asset";
 
 import {createBrowserRouter} from 'react-router-dom';
+import Test from "../pages/test";
 
 const routerMap = [
     {
@@ -31,6 +32,10 @@ const routerMap = [
     {
         path:"transfer-asset",
         element: <TransferAsset/>
+    },
+    {
+        path: 'test',
+        element: <Test/>
     }
 ]
 
