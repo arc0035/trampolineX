@@ -17,6 +17,7 @@ import {
 //   ActiveAccountImplementation,
 //   AccountImplementations,
 // } from '../../constants';
+import Onboarding from '../ext/onboarding/onboarding';
 // import { useBackgroundDispatch, useBackgroundSelector } from '../../hooks';
 // import { createNewAccount } from '../../../Background/redux-slices/keyrings';
 // import { getSupportedNetworks } from '../../../Background/redux-slices/selectors/networkSelectors';
@@ -99,6 +100,7 @@ const NewAccount = () => {
   const [name, setName] = useState<string>('');
   const [showLoader, setShowLoader] = useState<boolean>(false);
   const navigate = useNavigate();
+  const AccountOnboarding = Onboarding;
 
 //   const backgroundDispatch = useBackgroundDispatch();
 
@@ -114,22 +116,29 @@ const NewAccount = () => {
 //     }
 //   }, [addingAccount, backgroundDispatch, navigate]);
 
-//   const onOnboardingComplete = useCallback(
-//     async (context?: any) => {
-//       setShowLoader(true);
-//       await backgroundDispatch(
-//         createNewAccount({
-//           name: name,
-//           chainIds: supportedNetworks.map((network) => network.chainID),
-//           implementation: ActiveAccountImplementation,
-//           context,
-//         })
-//       );
-//       setShowLoader(false);
-//     },
-//     [backgroundDispatch, supportedNetworks, name]
-//   );
-
+  // const onOnboardingComplete = useCallback(
+  //   async (context?: any) => {
+  //     setShowLoader(true);
+  //     await backgroundDispatch(
+  //       createNewAccount({
+  //         name: name,
+  //         chainIds: supportedNetworks.map((network) => network.chainID),
+  //         implementation: ActiveAccountImplementation,
+  //         context,
+  //       })
+  //     );
+  //     setShowLoader(false);
+  //   },
+  //   [backgroundDispatch, supportedNetworks, name]
+  // );
+  const onOnboardingComplete = useCallback(
+    async (context?: any) => {
+      setShowLoader(true);
+      
+      setShowLoader(false);
+    },
+    []
+  );
 //   const nextStage = useCallback(() => {
 //     setShowLoader(true);
 //     if (stage === 'name' && AccountOnboarding) {
@@ -142,7 +151,16 @@ const NewAccount = () => {
 //   }, [stage, setStage, onOnboardingComplete]);
 
     const nextStage = async ()=>{
-        alert("nextStage");
+    setShowLoader(true);
+    await sleep(1000);
+    if (stage === 'name') {
+      setStage('account-onboarding');
+    }
+    alert(stage);
+    // if (stage === 'name' && !AccountOnboarding) {
+    //   onOnboardingComplete();
+    // }
+    setShowLoader(false);
     };
 
   return (
@@ -188,18 +206,22 @@ const NewAccount = () => {
               nextStage={nextStage}
             />
           )}
-          {/* {!showLoader &&
+          {!showLoader &&
             stage === 'account-onboarding' &&
-            AccountOnboarding && (
+             (
               <AccountOnboarding
                 accountName={name}
                 onOnboardingComplete={onOnboardingComplete}
               />
-            )} */}
+            )}
         </Box>
       </Stack>
     </Container>
   );
 };
+
+function sleep(ms:any) {
+  return new Promise(resolve => setTimeout(resolve, ms));
+}
 
 export default NewAccount;
