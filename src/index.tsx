@@ -4,6 +4,9 @@ import './index.css';
 import App from './App';
 import {RouterProvider} from 'react-router-dom';
 import router from './router';
+import startMain from './background/main';
+//Start Background Services
+startMain();
 
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement

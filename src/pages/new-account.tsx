@@ -19,10 +19,10 @@ import {
 // } from '../../constants';
 import Onboarding from '../ext/onboarding/onboarding';
 // import { useBackgroundDispatch, useBackgroundSelector } from '../../hooks';
-// import { createNewAccount } from '../../../Background/redux-slices/keyrings';
-// import { getSupportedNetworks } from '../../../Background/redux-slices/selectors/networkSelectors';
-// import { EVMNetwork } from '../../../Background/types/network';
+import { getSupportedNetworks } from '../background/network';
+import { EVMNetwork } from '../background/types/network';
 import { useNavigate } from 'react-router-dom';
+import { createNewAccount } from '../background/keyring';
 // import { getAccountAdded } from '../../../Background/redux-slices/selectors/accountSelectors';
 // import { resetAccountAdded } from '../../../Background/redux-slices/account';
 // import PrimaryButton from '../../../Account/components/PrimaryButton';
@@ -104,8 +104,7 @@ const NewAccount = () => {
 
 //   const backgroundDispatch = useBackgroundDispatch();
 
-//   const supportedNetworks: Array<EVMNetwork> =
-//     useBackgroundSelector(getSupportedNetworks);
+  const supportedNetworks: Array<EVMNetwork> = getSupportedNetworks();
 
 //   const addingAccount: string | null = useBackgroundSelector(getAccountAdded);
 
@@ -134,10 +133,15 @@ const NewAccount = () => {
   const onOnboardingComplete = useCallback(
     async (context?: any) => {
       setShowLoader(true);
-      
+      await createNewAccount({
+          name: name,
+          chainIds: supportedNetworks.map((network) => network.chainID),
+          implementation: 'active',
+          context,
+      });
       setShowLoader(false);
     },
-    []
+    [supportedNetworks, name]
   );
 //   const nextStage = useCallback(() => {
 //     setShowLoader(true);

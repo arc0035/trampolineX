@@ -7,7 +7,7 @@ import {
   } from '@mui/material';
   import { Stack } from '@mui/system';
   import React from 'react';
-  import { OnboardingComponent, OnboardingComponentProps } from '../../types/types';
+  import { OnboardingComponent, OnboardingComponentProps } from '../../background/types/component';
 
   
   const Onboarding: OnboardingComponent = ({
