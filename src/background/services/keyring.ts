@@ -36,7 +36,7 @@ export type KeyringServiceCreateProps = {
   entryPointAddress: string;
 } & BaseServiceCreateProps;
 
-export default class KeyringService extends BaseService<Events> {
+export default class KeyringService extends BaseService<Event> {
   keyrings: {
     [address: string]: AccountApiType;
   };
@@ -61,6 +61,11 @@ export default class KeyringService extends BaseService<Events> {
     this.vault = vault;
   }
 
+  /**
+   * Verify that the environment is setup correctly, including:
+   * - Bundler is online
+   * - EntrypPoint is online
+   */
   init = async () => {
     const net = await this.provider.getNetwork();
 
@@ -387,7 +392,7 @@ export default class KeyringService extends BaseService<Events> {
     context?: any
   ): Promise<UserOperationStruct> => {
     const keyring = this.keyrings[address];
-    const userOp = await resolveProperties(
+    const userOp: UserOperationStruct= await resolveProperties(
       await keyring.createUnsignedUserOpWithContext(
         {
           target: transaction.to,
