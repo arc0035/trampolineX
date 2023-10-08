@@ -13,7 +13,7 @@ import {
 import account from './account';
 import keyrings from './keyrings';
 import network from './network';
-// import transactions from './transactions';
+import transactions from './transactions';
 // import dappPermissions from './permissions';
 // import signing from './signing';
 // import { allAliases } from './utils';
@@ -26,7 +26,7 @@ const rootReducer = combineReducers({
   network,
 //   dappPermissions,
 //   signing,
-//   transactions,
+  transactions,
 });
 
 export default rootReducer;

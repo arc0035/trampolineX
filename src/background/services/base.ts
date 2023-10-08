@@ -1,5 +1,5 @@
 import Emittery from 'emittery';
-import { Alarms } from 'webextension-polyfill';
+// import { Alarms } from 'webextension-polyfill';
 import MainServiceManager from './main';
 import { Service, ServiceLifecycleEvents } from '../types/services/types';
 
@@ -14,16 +14,6 @@ import { Service, ServiceLifecycleEvents } from '../types/services/types';
  * @see {@link https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/API/alarms/create|
  * The MDN docs for `alarms.create`}.
  */
-type AlarmSchedule =
-  | {
-    when: number;
-    periodInMinutes?: number;
-  }
-  | {
-    delayInMinutes: number;
-    periodInMinutes?: number;
-  }
-  | { periodInMinutes: number };
 
 /**
  * An object carrying the same information as {@link AlarmSchedule}, but that
@@ -35,20 +25,12 @@ type AlarmSchedule =
  * the handler at service start for the first time instead of waiting for the
  * first scheduled run to execute.
  */
-export type AlarmHandlerSchedule = {
-  schedule: AlarmSchedule;
-  handler: (alarm?: Alarms.Alarm) => void;
-  runAtStart?: boolean;
-};
 
 /*
  * An object mapping alarm names to their designated schedules. Alarm names are
  * used to disambiguate between different alarms when they are fired, so as to
  * fire the handler associated with the appropriate alarm.
  */
-export type AlarmHandlerScheduleMap = {
-  [alarmName: string]: AlarmHandlerSchedule;
-};
 
 export type BaseServiceCreateProps = {
   mainServiceManager?: MainServiceManager;
@@ -67,7 +49,7 @@ export default abstract class BaseService<Events extends ServiceLifecycleEvents>
    * are not added until `startService` is called.
    */
   protected constructor(
-    protected readonly alarmSchedules: AlarmHandlerScheduleMap = {}
+    
   ) { }
 
   private serviceState: 'unstarted' | 'started' | 'stopped' = 'unstarted';
@@ -136,19 +118,7 @@ export default abstract class BaseService<Events extends ServiceLifecycleEvents>
    * all alarms and their handling.
    */
   protected async internalStartService(): Promise<void> {
-    const scheduleEntries = Object.entries(this.alarmSchedules);
 
-    scheduleEntries.forEach(([name, { schedule, runAtStart, handler }]) => {
-      chrome.alarms.create(name, schedule);
-
-      if (runAtStart) {
-        handler();
-      }
-    });
-
-    if (scheduleEntries.length > 0) {
-      chrome.alarms.onAlarm.addListener(this.handleAlarm);
-    }
   }
 
   /**
@@ -157,13 +127,7 @@ export default abstract class BaseService<Events extends ServiceLifecycleEvents>
    * all alarms and their handling.
    */
   protected async internalStopService(): Promise<void> {
-    const scheduleNames = Object.keys(this.alarmSchedules);
 
-    scheduleNames.forEach((alarmName) => chrome.alarms.clear(alarmName));
-
-    if (scheduleNames.length > 0) {
-      chrome.alarms.onAlarm.removeListener(this.handleAlarm);
-    }
   }
 
   /**
@@ -202,7 +166,4 @@ export default abstract class BaseService<Events extends ServiceLifecycleEvents>
    * Default handler for alarms. By default, calls the defined handler for the
    * named alarm, if available. Override for custom behavior.
    */
-  protected handleAlarm = (alarm: Alarms.Alarm): void => {
-    this.alarmSchedules[alarm.name]?.handler(alarm);
-  };
 }

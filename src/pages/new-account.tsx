@@ -22,7 +22,7 @@ import Onboarding from '../ext/onboarding/onboarding';
 import { getSupportedNetworks } from '../background/network';
 import { EVMNetwork } from '../background/types/network';
 import { useNavigate } from 'react-router-dom';
-import { createNewAccount } from '../background/keyring';
+import { createNewAccount } from '../background/redux-slices/keyrings';
 // import { getAccountAdded } from '../../../Background/redux-slices/selectors/accountSelectors';
 // import { resetAccountAdded } from '../../../Background/redux-slices/account';
 // import PrimaryButton from '../../../Account/components/PrimaryButton';

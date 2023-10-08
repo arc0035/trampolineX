@@ -1,9 +1,10 @@
 import Config from '../exconfig';
-import { initialNetworkState } from './store/network';
+// import { initialNetworkState } from './store/network';
 import { EVMNetwork } from './types/network';
 
 export function getSupportedNetworks():Array<EVMNetwork>{
-      return [initialNetworkState];
+      // return [initialNetworkState];
+      return [];
 }
 
 

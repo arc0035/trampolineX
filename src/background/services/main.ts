@@ -2,10 +2,10 @@
 import BaseService from './base';
 import Config from '../../exconfig';
 import { decodeJSON } from '../utils';
-import StateStore from '../store/store';
-import RootState from '../store/state';
-import { initialNetworkState } from '../store/network';
-import { initialTransactionState } from '../store/transaction';
+import { RootState } from '../redux-slices';
+import { initialState as initialNetworkState } from '../redux-slices/network';
+import { initialState as initialTransactionState } from '../redux-slices/transactions';
+import { ReduxStoreType, initializeStore } from '../redux-slices';
 
 export interface MainServiceManagerServicesMap {
   [key: string]: BaseService<any>;
@@ -16,7 +16,7 @@ export interface MainServiceManagerProps {
 }
 
 export default class MainServiceManager extends BaseService<never> {
-  store: StateStore;
+  store: ReduxStoreType;
   services?: MainServiceManagerServicesMap;
 
   constructor(readonly name: string) {
@@ -38,7 +38,8 @@ export default class MainServiceManager extends BaseService<never> {
     }
     state.network = initialNetworkState;
     state.transactions = initialTransactionState;
-    this.store = new StateStore(state as RootState);
+    this.store = initializeStore(state as RootState, this);
+    // wrapStore(this.store);
   }
 
   init = async (props: MainServiceManagerProps) => {

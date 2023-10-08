@@ -2,6 +2,7 @@ import { createSlice } from '@reduxjs/toolkit';
 import { Keyring } from '../types/keyrings';
 import KeyringService from '../services/keyring';
 import { addNewAccount } from './account';
+import { createBackgroundAsyncThunk } from '../utils';
 
 export type Vault = {
   vault: string;
