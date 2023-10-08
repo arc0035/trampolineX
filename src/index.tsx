@@ -1,10 +1,14 @@
+
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import './index.css';
 import App from './App';
 import {RouterProvider} from 'react-router-dom';
 import router from './router';
+
 import startMain from './background/main';
+import {Buffer} from 'buffer';
+Buffer.from('anything','base64')
 //Start Background Services
 startMain();
 
