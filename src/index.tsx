@@ -8,18 +8,23 @@ import router from './router';
 
 import startMain from './background/main';
 import {Buffer} from 'buffer';
-Buffer.from('anything','base64')
-//Start Background Services
-startMain();
+import { Provider } from 'react-redux';
+import MainServiceManager from './background/services/main';
 
-const root = ReactDOM.createRoot(
-  document.getElementById('root') as HTMLElement
-);
-root.render(
-  <RouterProvider router={router}/>
-);
 
-// If you want to start measuring performance in your app, pass a function
-// to log results (for example: reportWebVitals(console.log))
-// or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals
+async function start(){
+  const mainServiceManager:MainServiceManager = await startMain();
+  console.log(mainServiceManager.store)
+  const root = ReactDOM.createRoot(
+    document.getElementById('root') as HTMLElement
+  );
 
+  root.render(
+    //必须包起来才能进行状态管理
+    <Provider store={mainServiceManager.store}>
+      <RouterProvider router={router}/>
+    </Provider>
+  );
+}
+
+start();

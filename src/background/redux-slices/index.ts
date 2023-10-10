@@ -14,6 +14,7 @@ import account from './account';
 import keyrings from './keyrings';
 import network from './network';
 import transactions from './transactions';
+import test from './test';
 // import dappPermissions from './permissions';
 // import signing from './signing';
 // import { allAliases } from './utils';
@@ -27,6 +28,7 @@ const rootReducer = combineReducers({
 //   dappPermissions,
 //   signing,
   transactions,
+  test
 });
 
 export default rootReducer;
@@ -66,7 +68,7 @@ const reduxCache =
       (action: Action) => {
         const result = next(action);
         const state = store.getState();
-
+        console.log('redux cached')
         persistStoreState(state);
         return result;
       };

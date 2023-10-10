@@ -18,6 +18,7 @@ export interface MainServiceManagerProps {
 export default class MainServiceManager extends BaseService<never> {
   store: ReduxStoreType;
   services?: MainServiceManagerServicesMap;
+  static instance: MainServiceManager;
 
   constructor(readonly name: string) {
     super();
@@ -39,6 +40,7 @@ export default class MainServiceManager extends BaseService<never> {
     state.network = initialNetworkState;
     state.transactions = initialTransactionState;
     this.store = initializeStore(state as RootState, this);
+    MainServiceManager.instance = this;
     // wrapStore(this.store);
   }
 
@@ -57,6 +59,7 @@ export default class MainServiceManager extends BaseService<never> {
     await mainServiceManager.init({
       services: await serviceInitializer(mainServiceManager),
     });
+
 
     return mainServiceManager;
   }

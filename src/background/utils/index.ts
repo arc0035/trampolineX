@@ -132,6 +132,8 @@ export function createBackgroundAsyncThunk<
   options?: AsyncThunkOptions<ThunkArg, ThunkApiConfig>
 ): ((payload: ThunkArg) => Action<TypePrefix> & { payload: ThunkArg }) &
   Pick<AsyncThunk<Returned, ThunkArg, ThunkApiConfig>, AsyncThunkProps> {
+    console.log('in createBackgroundAsyncThunk:'+typePrefix)
+
   // Exit early if this type prefix is already aliased for handling in the
   // background script.
   if (allAliases[typePrefix]) {

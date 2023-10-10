@@ -133,12 +133,12 @@ const NewAccount = () => {
   const onOnboardingComplete = useCallback(
     async (context?: any) => {
       setShowLoader(true);
-      await createNewAccount({
-          name: name,
-          chainIds: supportedNetworks.map((network) => network.chainID),
-          implementation: 'active',
-          context,
-      });
+      // await createNewAccount({
+      //     name: name,
+      //     chainIds: supportedNetworks.map((network) => network.chainID),
+      //     implementation: 'active',
+      //     context,
+      // });
       setShowLoader(false);
     },
     [supportedNetworks, name]

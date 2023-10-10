@@ -1,9 +1,10 @@
-import { createSlice } from '@reduxjs/toolkit';
-import { Keyring } from '../types/keyrings';
+import { AnyAction, createSlice } from '@reduxjs/toolkit';
+import { Keyring,KeyringMetadata } from '../types/keyrings';
 import KeyringService from '../services/keyring';
 import { addNewAccount } from './account';
 import { createBackgroundAsyncThunk } from '../utils';
-
+import MainServiceManager from '../services/main';
+import { Dispatch } from 'react';
 export type Vault = {
   vault: string;
   encryptionKey?: string;
@@ -12,6 +13,9 @@ export type Vault = {
 
 export type KeyringsState = {
   keyrings: Keyring[];
+  keyringMetadata: {
+    [keyringId: string]: KeyringMetadata;
+  };
   importing: false | 'pending' | 'done';
   status: 'locked' | 'unlocked' | 'uninitialized';
   vault: Vault;
@@ -21,8 +25,11 @@ export type KeyringsState = {
   } | null;
 };
 
+
 export const initialState: KeyringsState = {
   keyrings: [],
+  keyringMetadata: {},
+
   vault: {
     vault:
       '{"data":"Ukexw7sD847Dj98jjvGP+USD","iv":"+X2ZjepqanEDFIJneBDHcw==","salt":"LWHFdiZSZwESRu0M5vBaeLIBwszt8zclfbUH4h8tWFU="}',
@@ -85,27 +92,33 @@ export const initializeKeyring = createBackgroundAsyncThunk(
   }
 );
 
-export const createNewAccount = createBackgroundAsyncThunk(
-  'keyring/createNewAccount',
-  async (
-    {
-      name,
-      implementation,
-      context,
-      chainIds,
-    }: {
-      name: string;
-      chainIds: Array<string>;
-      implementation: string;
-      context?: any;
-    },
-    { dispatch, extra: { mainServiceManager } }
-  ) => {
-    const keyringService = mainServiceManager.getService(
+export const createNewAccount =   async (
+  {
+    name,
+    implementation,
+    context,
+    chainIds,
+  }: {
+    name: string;
+    chainIds: Array<string>;
+    implementation: string;
+    context?: any
+  },
+  apiContext:{
+    mainServiceManager:MainServiceManager,
+    dispatch: Dispatch<AnyAction>
+  }
+  )=>{
+    console.log('hi');
+    //     console.log('createNewAccount thunk');
+
+    const keyringService = apiContext.mainServiceManager.getService(
       KeyringService.name
     ) as KeyringService;
+      console.log(keyringService);
     const address = await keyringService.addAccount(implementation, context);
-    dispatch(
+    console.log(address)
+    apiContext.dispatch(
       addNewAccount({
         name,
         makeActive: true,
@@ -114,4 +127,37 @@ export const createNewAccount = createBackgroundAsyncThunk(
       })
     );
   }
-);
+
+// export const createNewAccount = createBackgroundAsyncThunk(
+//   'keyring/createNewAccount',
+//   async (
+//     {
+//       name,
+//       implementation,
+//       context,
+//       chainIds,
+//     }: {
+//       name: string;
+//       chainIds: Array<string>;
+//       implementation: string;
+//       context?: any;
+//     },
+//     { dispatch, extra: { mainServiceManager } }
+//   ) => {
+//     console.log('createNewAccount thunk');
+//     const keyringService = mainServiceManager.getService(
+//       KeyringService.name
+//     ) as KeyringService;
+
+//     const address = await keyringService.addAccount(implementation, context);
+//     console.log(address)
+//     dispatch(
+//       addNewAccount({
+//         name,
+//         makeActive: true,
+//         chainIds: chainIds,
+//         address: address,
+//       })
+//     );
+//   }
+// );

@@ -45,6 +45,7 @@ export default async function startMain(): Promise<MainServiceManager> {
     serviceInitializer
   );
   mainService.startService();
+  console.log('主服务已启动')
   // const state = mainService.store.getState();
   return mainService.started();
 }
