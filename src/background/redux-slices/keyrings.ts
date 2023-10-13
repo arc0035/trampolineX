@@ -2,7 +2,6 @@ import { AnyAction, createSlice } from '@reduxjs/toolkit';
 import { Keyring,KeyringMetadata } from '../types/keyrings';
 import KeyringService from '../services/keyring';
 import { addNewAccount } from './account';
-import { createBackgroundAsyncThunk } from '../utils';
 import MainServiceManager from '../services/main';
 import { Dispatch } from 'react';
 export type Vault = {
@@ -82,15 +81,15 @@ export default keyringsSlice.reducer;
  * -------------------------------
  */
 
-export const initializeKeyring = createBackgroundAsyncThunk(
-  'keyring/initialize',
-  async (password: string, { dispatch, extra: { mainServiceManager } }) => {
-    const keyringService = mainServiceManager.getService(
-      KeyringService.name
-    ) as KeyringService;
-    await keyringService.createPassword(password);
-  }
-);
+// export const initializeKeyring = createBackgroundAsyncThunk(
+//   'keyring/initialize',
+//   async (password: string, { dispatch, extra: { mainServiceManager } }) => {
+//     const keyringService = mainServiceManager.getService(
+//       KeyringService.name
+//     ) as KeyringService;
+//     await keyringService.createPassword(password);
+//   }
+// );
 
 export const createNewAccount =   async (
   {
@@ -128,36 +127,3 @@ export const createNewAccount =   async (
     );
   }
 
-// export const createNewAccount = createBackgroundAsyncThunk(
-//   'keyring/createNewAccount',
-//   async (
-//     {
-//       name,
-//       implementation,
-//       context,
-//       chainIds,
-//     }: {
-//       name: string;
-//       chainIds: Array<string>;
-//       implementation: string;
-//       context?: any;
-//     },
-//     { dispatch, extra: { mainServiceManager } }
-//   ) => {
-//     console.log('createNewAccount thunk');
-//     const keyringService = mainServiceManager.getService(
-//       KeyringService.name
-//     ) as KeyringService;
-
-//     const address = await keyringService.addAccount(implementation, context);
-//     console.log(address)
-//     dispatch(
-//       addNewAccount({
-//         name,
-//         makeActive: true,
-//         chainIds: chainIds,
-//         address: address,
-//       })
-//     );
-//   }
-// );

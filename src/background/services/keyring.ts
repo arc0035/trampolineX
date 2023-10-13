@@ -19,9 +19,11 @@ import { EthersTransactionRequest } from '../types/services/types';
 import { UserOperationStruct } from '@account-abstraction/contracts';
 import { resolveProperties } from 'ethers/lib/utils.js';
 
+
 interface Events extends ServiceLifecycleEvents {
   createPassword: string;
 }
+
 
 type KeyringSerialisedState = {
   type: string;

@@ -15,9 +15,10 @@ import keyrings from './keyrings';
 import network from './network';
 import transactions from './transactions';
 import test from './test';
-// import dappPermissions from './permissions';
+import dappPermissions from './permissions';
 // import signing from './signing';
-// import { allAliases } from './utils';
+import { allAliases } from '../utils';
+import { alias } from 'webext-redux';
 import Config from '../../exconfig';
 import { debounce } from '@mui/material';
 
@@ -25,7 +26,7 @@ const rootReducer = combineReducers({
   account,
   keyrings,
   network,
-//   dappPermissions,
+  dappPermissions,
 //   signing,
   transactions,
   test
@@ -90,7 +91,7 @@ export const initializeStore = (
         thunk: { extraArgument: { mainServiceManager } },
       });
 
-    //   middleware.unshift(alias(allAliases));
+      middleware.unshift(alias(allAliases));
       middleware.push(reduxCache as any);
 
       return middleware as any;

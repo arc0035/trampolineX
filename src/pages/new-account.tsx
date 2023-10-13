@@ -13,19 +13,23 @@ import {
   Typography,
   Button
 } from '@mui/material';
-// import {
-//   ActiveAccountImplementation,
-//   AccountImplementations,
-// } from '../../constants';
+import {
+  ActiveAccountImplementation,
+  AccountImplementations,
+} from './constants';
 import Onboarding from '../ext/onboarding/onboarding';
 // import { useBackgroundDispatch, useBackgroundSelector } from '../../hooks';
-import { getSupportedNetworks } from '../background/network';
+
 import { EVMNetwork } from '../background/types/network';
 import { useNavigate } from 'react-router-dom';
 import { createNewAccount } from '../background/redux-slices/keyrings';
-// import { getAccountAdded } from '../../../Background/redux-slices/selectors/accountSelectors';
-// import { resetAccountAdded } from '../../../Background/redux-slices/account';
-// import PrimaryButton from '../../../Account/components/PrimaryButton';
+import { useApiContext } from '../background/hooks/keyring-hooks';
+import { useBackgroundSelector } from '../background/hooks/redux-hooks';
+import { getAccountAdded } from '../background/redux-slices/selectors/accountSelectors';
+import { resetAccountAdded } from '../background/redux-slices/account';
+import { getSupportedNetworks } from '../background/redux-slices/selectors/networkSelectors';
+import { useDispatch } from 'react-redux';
+
 
 const TakeNameComponent = ({
   name,
@@ -92,80 +96,51 @@ const TakeNameComponent = ({
   );
 };
 
-// const AccountOnboarding =
-//   AccountImplementations[ActiveAccountImplementation].Onboarding;
+const AccountOnboarding =
+  AccountImplementations[ActiveAccountImplementation].Onboarding;
 
 const NewAccount = () => {
   const [stage, setStage] = useState<'name' | 'account-onboarding'>('name');
   const [name, setName] = useState<string>('');
   const [showLoader, setShowLoader] = useState<boolean>(false);
   const navigate = useNavigate();
-  const AccountOnboarding = Onboarding;
 
-//   const backgroundDispatch = useBackgroundDispatch();
+  const dispatch = useDispatch();
+  const apiContext = useApiContext();
+  const supportedNetworks: Array<EVMNetwork> = useBackgroundSelector(getSupportedNetworks);
 
-  const supportedNetworks: Array<EVMNetwork> = getSupportedNetworks();
+  const addingAccount: string | null = useBackgroundSelector(getAccountAdded);
 
-//   const addingAccount: string | null = useBackgroundSelector(getAccountAdded);
+  useEffect(() => {
+    if (addingAccount) {
+      dispatch(resetAccountAdded());
+      navigate('/');
+    }
+  }, [addingAccount, dispatch, navigate]);
 
-//   useEffect(() => {
-//     if (addingAccount) {
-//       backgroundDispatch(resetAccountAdded());
-//       navigate('/');
-//     }
-//   }, [addingAccount, backgroundDispatch, navigate]);
-
-  // const onOnboardingComplete = useCallback(
-  //   async (context?: any) => {
-  //     setShowLoader(true);
-  //     await backgroundDispatch(
-  //       createNewAccount({
-  //         name: name,
-  //         chainIds: supportedNetworks.map((network) => network.chainID),
-  //         implementation: ActiveAccountImplementation,
-  //         context,
-  //       })
-  //     );
-  //     setShowLoader(false);
-  //   },
-  //   [backgroundDispatch, supportedNetworks, name]
-  // );
   const onOnboardingComplete = useCallback(
     async (context?: any) => {
       setShowLoader(true);
-      // await createNewAccount({
-      //     name: name,
-      //     chainIds: supportedNetworks.map((network) => network.chainID),
-      //     implementation: 'active',
-      //     context,
-      // });
+      await createNewAccount({
+          name: name,
+          chainIds: supportedNetworks.map((network) => network.chainID),
+          implementation: 'active',
+          context,
+      },apiContext);
       setShowLoader(false);
     },
     [supportedNetworks, name]
   );
-//   const nextStage = useCallback(() => {
-//     setShowLoader(true);
-//     if (stage === 'name' && AccountOnboarding) {
-//       setStage('account-onboarding');
-//     }
-//     if (stage === 'name' && !AccountOnboarding) {
-//       onOnboardingComplete();
-//     }
-//     setShowLoader(false);
-//   }, [stage, setStage, onOnboardingComplete]);
-
-    const nextStage = async ()=>{
+  const nextStage = useCallback(() => {
     setShowLoader(true);
-    await sleep(1000);
-    if (stage === 'name') {
+    if (stage === 'name' && AccountOnboarding) {
       setStage('account-onboarding');
     }
-    alert(stage);
-    // if (stage === 'name' && !AccountOnboarding) {
-    //   onOnboardingComplete();
-    // }
+    if (stage === 'name' && !AccountOnboarding) {
+      onOnboardingComplete();
+    }
     setShowLoader(false);
-    };
+  }, [stage, setStage, onOnboardingComplete]);
 
   return (
     <Container sx={{ height: '100vh' }}>
@@ -212,6 +187,7 @@ const NewAccount = () => {
           )}
           {!showLoader &&
             stage === 'account-onboarding' &&
+            AccountOnboarding &&
              (
               <AccountOnboarding
                 accountName={name}
