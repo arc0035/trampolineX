@@ -112,6 +112,8 @@ const NewAccount = () => {
   const addingAccount: string | null = useBackgroundSelector(getAccountAdded);
 
   useEffect(() => {
+    //If new account is added, jump back to /, it will redirect to main page if 
+    //there is account in localstorage
     if (addingAccount) {
       dispatch(resetAccountAdded());
       navigate('/');

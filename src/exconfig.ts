@@ -18,7 +18,7 @@ export default {
       name: 'ETH',
       decimals: 18,
       image:
-        'https://ethereum.org/static/6b935ac0e6194247347855dc3d328e83/6ed5f/eth-diamond-black.webp',
+        'https://upload.wikimedia.org/wikipedia/commons/7/70/Ethereum_logo.svg',
     },
   } satisfies EVMNetwork,
 };

@@ -11,7 +11,7 @@ import Test from "../pages/test";
 const routerMap = [
     {
         path: "/",
-        element: <Intro/>
+        element: <Home/>
     },
     {
         path: "onboarding/intro",

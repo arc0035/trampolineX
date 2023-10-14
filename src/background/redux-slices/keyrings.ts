@@ -68,10 +68,14 @@ const keyringsSlice = createSlice({
           ? 'locked'
           : state.status,
     }),
+    resetKeyRings: (state)=>({
+      ...initialState
+    }
+    )
   },
 });
 
-export const { keyringLocked, vaultUpdate, keyringUnlocked } =
+export const { keyringLocked, vaultUpdate, keyringUnlocked, resetKeyRings } =
   keyringsSlice.actions;
 export default keyringsSlice.reducer;
 

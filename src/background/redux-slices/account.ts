@@ -1,9 +1,12 @@
-import { createSlice } from '@reduxjs/toolkit';
+import { AnyAction, createSlice } from '@reduxjs/toolkit';
 import { DomainName, HexString, URI } from '../types/common';
 import { EVMNetwork } from '../types/network';
 import { AccountBalance } from '../types/account';
 import KeyringService from '../services/keyring';
 import { RootState } from './index';
+import { Dispatch } from 'react';
+import MainServiceManager from '../services/main';
+import { resetKeyRings } from './keyrings';
 
 export type AccountData = {
   address: HexString;
@@ -128,43 +131,50 @@ const accountSlice = createSlice({
         },
       },
     }),
+    resetAccount: (state)=>(
+      {...initialState}
+    )
   },
 });
 
-export const { addNewAccount, resetAccountAdded, setAccountData } =
+export const { addNewAccount, resetAccountAdded, setAccountData, resetAccount } =
   accountSlice.actions;
 export default accountSlice.reducer;
 
-// export const getAccountData = createBackgroundAsyncThunk(
-//   'account/getAccountData',
-//   async (address: string, { dispatch, extra: { mainServiceManager } }) => {
-//     const keyringService = mainServiceManager.getService(
-//       KeyringService.name
-//     ) as KeyringService;
-//     const activeNetwork = (mainServiceManager.store.getState() as RootState)
-//       .network.activeNetwork;
-//     keyringService.getAccountData(address, activeNetwork).then((accountData) =>
-//       dispatch(
-//         setAccountData({
-//           minimumRequiredFunds: accountData.minimumRequiredFunds,
-//           address: address,
-//           network: activeNetwork,
-//           accountDeployed: accountData.accountDeployed,
-//           balances: accountData.balances,
-//           ens: accountData.ens,
-//         })
-//       )
-//     );
-//   }
-// );
+export const getAccountData = 
+  async (address:string, apiContext: {dispatch: Dispatch<AnyAction>, mainServiceManager: MainServiceManager})=>{
+      //1. Params preparations
+      const mainServiceManager: MainServiceManager = apiContext.mainServiceManager;
+      const keyringService = mainServiceManager.getService(KeyringService.name) as KeyringService;
+      const activeNetwork = (mainServiceManager.store.getState() as RootState).network.activeNetwork;
+      
+      //2. Load account banalce & code info from blockchain 
+      const accountData = await keyringService.getAccountData(address, activeNetwork);
 
+      //3. set to state
+      const dispatch = apiContext.dispatch;
+      dispatch(setAccountData({
+        minimumRequiredFunds: accountData.minimumRequiredFunds,
+        address: address,
+        network: activeNetwork,
+        accountDeployed: accountData.accountDeployed,
+        balances: accountData.balances
+      }));
+  }
+
+export const resetAccountApi = (address: string, apiContext:{dispatch:Dispatch<AnyAction>})=>{
+  const dispatch = apiContext.dispatch;
+  dispatch(resetAccount());
+  dispatch(resetKeyRings());
+  
+};
 // export const callAccountApiThunk = createBackgroundAsyncThunk(
 //   'account/callAccountApiThunk',
 //   async (
 //     {
 //       address,
 //       functionName,
-//       args,
+//       args,s
 //     }: { address: string; functionName: string; args?: any[] },
 //     { dispatch, extra: { mainServiceManager } }
 //   ) => {

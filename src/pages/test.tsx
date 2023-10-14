@@ -16,7 +16,11 @@ export default function Test(){
     
     return (
         <Container sx={{
-            border: '1px solid red'
+            border: '1px solid red',
+            display: 'flex',
+            flexDirection: 'column',
+            justifyContent: 'space-between',
+            alignItems: 'center'
         }}
         >
             <Typography variant='h3' sx={{

@@ -211,6 +211,7 @@ export default class KeyringService extends BaseService<Events> {
     this.keyringUnlocked();
   };
 
+
   keyringUnlocked = () => {
     this.mainServiceManager.store.dispatch(keyringUnlocked());
   };
