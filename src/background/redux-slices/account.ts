@@ -148,7 +148,7 @@ export const getAccountData =
       const keyringService = mainServiceManager.getService(KeyringService.name) as KeyringService;
       const activeNetwork = (mainServiceManager.store.getState() as RootState).network.activeNetwork;
       
-      //2. Load account banalce & code info from blockchain 
+      //2. Load account balance & code info from blockchain 
       const accountData = await keyringService.getAccountData(address, activeNetwork);
 
       //3. set to state

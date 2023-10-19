@@ -16,13 +16,13 @@ import {
     getSupportedNetworks,
   } from '../background/redux-slices/selectors/networkSelectors';
  
-  import SettingsIcon from '@mui/icons-material/Settings';
+
   import { useNavigate } from 'react-router-dom';
-  import {getAccountData, resetAccountApi } from '../background/redux-slices/account';
+  import { resetAccountApi } from '../background/redux-slices/account';
   import { getActiveAccount } from '../background/redux-slices/selectors/accountSelectors';
 
-import { useSelector } from 'react-redux';
-import { useApiContext } from '../background/hooks/keyring-hooks';
+  import { useSelector } from 'react-redux';
+  import { useApiContext } from '../background/hooks/keyring-hooks';
   
   const Header = () => {
     const navigate = useNavigate();

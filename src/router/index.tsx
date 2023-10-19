@@ -30,7 +30,7 @@ const routerMap = [
         element: <DeployAccount/>
     },
     {
-        path:"transfer-asset",
+        path:"transfer-assets",
         element: <TransferAsset/>
     },
     {
